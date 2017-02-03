@@ -6,9 +6,6 @@ The module can be customized during the build and/or run-time.
 
 ### Customized build
 In order to get the customized build, edit the file under config/config.json und run the default gulp task. The build version will be available unser '/dist/viciauth.js'.
-´´´
-gulp
-´´´
 
 ### Run-time Configuration
 ```
@@ -36,6 +33,10 @@ You can configure the following properties:
 #### getUserId()
 #### getToken()
 #### isAuthenticated()
+
+### Authors
+Adrian Barwicki
+viciqloud.com
 
 ### Licence
 MIT
