@@ -2,7 +2,7 @@
 
 angular.module("viciauth", []).run(function () {
 	console.info("[ViciAuth] Launching Auth Module..");
-}).constant("API_URL", "https://viciqloud.com").constant("API", {
+}).constant("API_URL", "https://api.studentask.de").constant("API", {
 	LOGIN: "/login",
 	SIGNUP: "/signup",
 	VALIDATE: "/validate",

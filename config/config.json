@@ -1,5 +1,5 @@
 {
-    "API_URL": "https://viciqloud.com",
+    "API_URL": "https://api.studentask.de",
     "API_PATHS.LOGIN": "/login",
     "API_PATHS.SIGNUP": "/signup",
     "API_PATHS.VALIDATE": "/validate",
@@ -9,5 +9,3 @@
     "LOCAL_STORAGE.USERID_KEY": "ST_AUTH_USERID",
     "HEADERS.TOKEN": "X-Auth-Token"
 }
-
-    
