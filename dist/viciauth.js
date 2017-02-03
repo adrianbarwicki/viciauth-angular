@@ -2,17 +2,18 @@
 
 angular.module("viciauth", []).run(function () {
 	console.info("[ViciAuth] Launching Auth Module..");
-}).constant("API_URL", "https://api.studentask.de").constant("API", {
+}).value("API_URL", "https://api.studentask.de").value("API", {
+	API_URL: "https://api.studentask.de",
 	LOGIN: "/login",
 	SIGNUP: "/signup",
 	VALIDATE: "/validate",
 	FACEBOOK: "/networks/facebook",
 	LOGOUT: "/logout"
-}).factory("apiFactory", function (API_URL, API) {
+}).factory("apiFactory", function (API) {
 	return function (method) {
-		return API_URL + API[method];
+		return API.API_URL + API[method];
 	};
-}).service("ViciAuth", function ($window, $http, $q, apiFactory) {
+}).service("ViciAuth", function ($window, $http, $q, API, apiFactory) {
 	var LOCAL_TOKEN_KEY = 'ST_AUTH_TOKEN';
 	var LOCAL_USER_ID_KEY = 'ST_AUTH_USERID';
 
@@ -21,6 +22,10 @@ angular.module("viciauth", []).run(function () {
 	var role = '';
 	var authToken = void 0;
 	var authUserId = void 0;
+
+	function setApiUrl(apiUrl) {
+		API.API_URL = apiUrl;
+	}
 
 	function useCredentials(token, userId) {
 		console.info("[ViciAuth] Using User Credentials..");

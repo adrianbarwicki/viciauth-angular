@@ -2,17 +2,18 @@ angular.module("viciauth",[])
 .run(() => {
 	console.info("[ViciAuth] Launching Auth Module..");
 })
-.constant("API_URL", "@@API_URL")
-.constant("API", {
+.value("API_URL", "@@API_URL")
+.value("API", {
+	API_URL: "@@API_URL",
 	LOGIN: "@@API_PATHS.LOGIN",
 	SIGNUP: "@@API_PATHS.SIGNUP",
 	VALIDATE: "@@API_PATHS.VALIDATE",
 	FACEBOOK: "@@API_PATHS.FACEBOOK",
 	LOGOUT: "@@API_PATHS.LOGOUT"
 })
-.factory("apiFactory", (API_URL, API) => method => API_URL + API[method])
+.factory("apiFactory", (API) => method => API.API_URL + API[method])
 
-.service("ViciAuth", ($window, $http, $q, apiFactory) => {
+.service("ViciAuth", ($window, $http, $q, API, apiFactory) => {
   	const LOCAL_TOKEN_KEY = '@@LOCAL_STORAGE.TOKEN_KEY';
 	const LOCAL_USER_ID_KEY = '@@LOCAL_STORAGE.USERID_KEY';
 
@@ -21,6 +22,10 @@ angular.module("viciauth",[])
 	let role = '';
 	let authToken;
 	let authUserId;
+
+	function setApiUrl (apiUrl) {
+		API.API_URL = apiUrl;
+	}
 
 	function useCredentials (token, userId) {
 		console.info("[ViciAuth] Using User Credentials..");
