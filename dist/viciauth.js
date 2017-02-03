@@ -116,6 +116,7 @@ angular.module("viciauth", []).run(function () {
 	}
 
 	return {
+		setApiUrl: setApiUrl,
 		authUserId: authUserId,
 		validate: validate,
 		login: login,

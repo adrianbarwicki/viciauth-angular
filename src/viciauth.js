@@ -114,6 +114,7 @@ angular.module("viciauth",[])
 	} 
  
 	return {
+		setApiUrl: setApiUrl,
 		authUserId: authUserId,
 		validate: validate,
 		login: login,
