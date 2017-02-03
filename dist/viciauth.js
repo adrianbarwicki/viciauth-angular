@@ -8,7 +8,7 @@ angular.module("viciauth", []).run(function () {
 	VALIDATE: "/validate",
 	FACEBOOK: "/networks/facebook",
 	LOGOUT: "/logout"
-}).factory("ApiFactory", function (API_URL, API) {
+}).factory("apiFactory", function (API_URL, API) {
 	return function (method) {
 		return API_URL + API[method];
 	};

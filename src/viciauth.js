@@ -10,7 +10,7 @@ angular.module("viciauth",[])
 	FACEBOOK: "@@API_PATHS.FACEBOOK",
 	LOGOUT: "@@API_PATHS.LOGOUT"
 })
-.factory("ApiFactory", (API_URL, API) => method => API_URL + API[method])
+.factory("apiFactory", (API_URL, API) => method => API_URL + API[method])
 
 .service("ViciAuth", ($window, $http, $q, apiFactory) => {
   	const LOCAL_TOKEN_KEY = '@@LOCAL_STORAGE.TOKEN_KEY';
