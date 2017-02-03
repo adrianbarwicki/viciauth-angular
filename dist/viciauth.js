@@ -18,7 +18,7 @@ angular.module("viciauth", []).run(function () {
 	var LOCAL_USER_ID_KEY = 'ST_AUTH_USERID';
 
 	var username = '';
-	var isAuthenticated = false;
+	var _isAuthenticated = false;
 	var role = '';
 	var authToken = void 0;
 	var authUserId = void 0;
@@ -30,7 +30,7 @@ angular.module("viciauth", []).run(function () {
 	function useCredentials(token, userId) {
 		console.info("[ViciAuth] Using User Credentials..");
 
-		isAuthenticated = true;
+		_isAuthenticated = true;
 		authToken = token;
 		authUserId = userId;
 
@@ -59,7 +59,7 @@ angular.module("viciauth", []).run(function () {
 
 		authToken = undefined;
 		authUserId = undefined;
-		isAuthenticated = false;
+		_isAuthenticated = false;
 
 		$http.defaults.headers.common['X-Auth-Token'] = undefined;
 
@@ -115,13 +115,20 @@ angular.module("viciauth", []).run(function () {
 
 	return {
 		configure: configure,
-		authUserId: authUserId,
 		validate: validate,
 		login: login,
 		signup: signup,
 		logout: logout,
-		isAuthenticated: isAuthenticated,
-		loadUserCredentials: loadUserCredentials
+		loadUserCredentials: loadUserCredentials,
+		getUserId: function getUserId() {
+			return authUserId;
+		},
+		getToken: function getToken() {
+			return authToken;
+		},
+		isAuthenticated: function isAuthenticated() {
+			return _isAuthenticated;
+		}
 	};
 }).run(function (ViciAuth) {
 	return ViciAuth.loadUserCredentials();

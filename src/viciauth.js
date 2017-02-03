@@ -112,13 +112,14 @@ angular.module("viciauth",[])
  
 	return {
 		configure: configure,
-		authUserId: authUserId,
 		validate: validate,
 		login: login,
 		signup: signup,
 		logout: logout,
-		isAuthenticated: isAuthenticated,
-		loadUserCredentials: loadUserCredentials
+		loadUserCredentials: loadUserCredentials,
+		getUserId: () => authUserId,
+		getToken: () => authToken,
+		isAuthenticated: () => isAuthenticated,
 	};
 })
 
