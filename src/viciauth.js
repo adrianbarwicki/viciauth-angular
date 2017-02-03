@@ -23,8 +23,8 @@ angular.module("viciauth",[])
 	let authToken;
 	let authUserId;
 
-	function setApiUrl (apiUrl) {
-		API.API_URL = apiUrl;
+	function configure (configKey, configValue) {
+		API[configKey] = configValue;
 	}
 
 	function useCredentials (token, userId) {
@@ -69,29 +69,26 @@ angular.module("viciauth",[])
 		$window.localStorage.removeItem(LOCAL_USER_ID_KEY);
 	}
 
-  function login (id, pw) {
-		return $q((resolve, reject) => {
-			const body = {
-				id: id,
-				pw: pw,
-			};
-
-			$http.post(apiFactory("LOGIN"), body)
-				.success(data => {
-					storeUserCredentials(data.token, data.userId);
-					
-					return resolve(data);
-				})
-				.error(data => reject(data));
-		});
+  function login (email, password) {
+		return $q((resolve, reject) =>
+			$http.post(apiFactory("LOGIN"), {
+				id: email,
+				pw: password,
+			})
+			.success(data => {
+				storeUserCredentials(data.token, data.userId);
+				
+				return resolve(data);
+			})
+			.error(data => reject(data)));
 	}
 
-	function signup (data) {
+	function signup (email, password, params) {
 		return $q((resolve, reject) => {
 			const body = {
-				username: data.username,
-				password: data.password,
-        		email: data.email
+				params: params,
+				password: password,
+        		email: email
 			};
 
 			$http.post(apiFactory("SIGNUP"), body)
@@ -114,7 +111,7 @@ angular.module("viciauth",[])
 	} 
  
 	return {
-		setApiUrl: setApiUrl,
+		configure: configure,
 		authUserId: authUserId,
 		validate: validate,
 		login: login,

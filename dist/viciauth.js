@@ -23,8 +23,8 @@ angular.module("viciauth", []).run(function () {
 	var authToken = void 0;
 	var authUserId = void 0;
 
-	function setApiUrl(apiUrl) {
-		API.API_URL = apiUrl;
+	function configure(configKey, configValue) {
+		API[configKey] = configValue;
 	}
 
 	function useCredentials(token, userId) {
@@ -67,14 +67,12 @@ angular.module("viciauth", []).run(function () {
 		$window.localStorage.removeItem(LOCAL_USER_ID_KEY);
 	}
 
-	function login(id, pw) {
+	function login(email, password) {
 		return $q(function (resolve, reject) {
-			var body = {
-				id: id,
-				pw: pw
-			};
-
-			$http.post(apiFactory("LOGIN"), body).success(function (data) {
+			return $http.post(apiFactory("LOGIN"), {
+				id: email,
+				pw: password
+			}).success(function (data) {
 				storeUserCredentials(data.token, data.userId);
 
 				return resolve(data);
@@ -84,12 +82,12 @@ angular.module("viciauth", []).run(function () {
 		});
 	}
 
-	function signup(data) {
+	function signup(email, password, params) {
 		return $q(function (resolve, reject) {
 			var body = {
-				username: data.username,
-				password: data.password,
-				email: data.email
+				params: params,
+				password: password,
+				email: email
 			};
 
 			$http.post(apiFactory("SIGNUP"), body).success(function (data) {
@@ -116,7 +114,7 @@ angular.module("viciauth", []).run(function () {
 	}
 
 	return {
-		setApiUrl: setApiUrl,
+		configure: configure,
 		authUserId: authUserId,
 		validate: validate,
 		login: login,
