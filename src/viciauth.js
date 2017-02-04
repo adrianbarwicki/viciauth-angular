@@ -1,8 +1,5 @@
-angular.module("viciauth",[])
-.run(() => {
-	console.info("[ViciAuth] Launching Auth Module..");
-})
-.value("API_URL", "@@API_URL")
+angular.module("viciauth",[ ])
+
 .value("API", {
 	API_URL: "@@API_URL",
 	LOGIN: "@@API_PATHS.LOGIN",
@@ -11,6 +8,7 @@ angular.module("viciauth",[])
 	FACEBOOK: "@@API_PATHS.FACEBOOK",
 	LOGOUT: "@@API_PATHS.LOGOUT"
 })
+
 .factory("apiFactory", (API) => method => API.API_URL + API[method])
 
 .service("ViciAuth", ($window, $http, $q, API, apiFactory) => {
@@ -23,42 +21,33 @@ angular.module("viciauth",[])
 	let authToken;
 	let authUserId;
 
-	function configure (configKey, configValue) {
-		API[configKey] = configValue;
-	}
+	const configure = (configKey, configValue) => API[configKey] = configValue;
 
-	function useCredentials (token, userId) {
-		console.info("[ViciAuth] Using User Credentials..");
-
+	const useCredentials = (token, userId) => {
 		isAuthenticated = true;
 		authToken = token;
 		authUserId = userId;
 
 		$http.defaults.headers.common['@@HEADERS.TOKEN'] = token;
-	}
+	};
 	
-	function loadUserCredentials () {
-		console.info("[ViciAuth] Loading User Credentials..");
+	const storeUserCredentials = (token, userId) => {
+		$window.localStorage.setItem(LOCAL_USER_ID_KEY, userId);
+		$window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
 
-		var token = $window.localStorage.getItem(LOCAL_TOKEN_KEY);
-		var userId = $window.localStorage.getItem(LOCAL_USER_ID_KEY);
+		useCredentials(token, userId);
+	};
+
+	const loadUserCredentials = () => {
+		const token = $window.localStorage.getItem(LOCAL_TOKEN_KEY);
+		const userId = $window.localStorage.getItem(LOCAL_USER_ID_KEY);
 
 		if (token) {
 			useCredentials(token, userId);
 		}
 	}
 
-	function storeUserCredentials(token, userId) {
-		$window.localStorage.setItem(LOCAL_USER_ID_KEY, userId);
-		$window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-
-		useCredentials(token, userId);
-	}
-
-
-
-	function destroyUserCredentials() {
-
+	const destroyUserCredentials = () => {
 		authToken = undefined;
 		authUserId = undefined;
 		isAuthenticated = false;
@@ -69,54 +58,27 @@ angular.module("viciauth",[])
 		$window.localStorage.removeItem(LOCAL_USER_ID_KEY);
 	}
 
-  function login (email, password) {
-		return $q((resolve, reject) =>
-			$http.post(apiFactory("LOGIN"), {
-				id: email,
-				pw: password,
-			})
-			.success(data => {
-				storeUserCredentials(data.token, data.userId);
-				
-				return resolve(data);
-			})
-			.error(data => reject(data)));
-	}
+	const loginSignupFnFactory = loginOrSignup => postData => $q((resolve, reject) =>
+		$http.post(apiFactory(loginOrSignup), postData)
+		.success(data => {
+			storeUserCredentials(data.token, data.userId);
+			
+			return resolve(data);
+		})
+		.error(data => reject(data)));
 
-	function signup (email, password, params) {
-		return $q((resolve, reject) => {
-			const body = {
-				params: params,
-				password: password,
-        		email: email
-			};
+	const login = loginSignupFnFactory('LOGIN');
 
-			$http.post(apiFactory("SIGNUP"), body)
-				.success(data => {
-					storeUserCredentials(data.token, data.userId);
-					resolve(data);
-				})
-				.error(data => reject(data));
-		});
-	}
+	const signup = loginSignupFnFactory('SIGNUP');
 
-	function validate (callback) {
-		$http.post(apiFactory("VALIDATE"), {
-			token: $window.localStorage.getItem(LOCAL_TOKEN_KEY)
-		}).then(response => callback(response.data));
-	}
+	const validate = callback => $http.post(apiFactory("VALIDATE"), {
+		token: $window.localStorage.getItem(LOCAL_TOKEN_KEY)
+	}).then(response => callback(response.data));
 
-	function logout() {
-    	$http.post(apiFactory("LOGOUT")).then(data => destroyUserCredentials());
-	} 
+	const logout = () => $http.post(apiFactory("LOGOUT")).then(data => destroyUserCredentials());
  
 	return {
-		configure: configure,
-		validate: validate,
-		login: login,
-		signup: signup,
-		logout: logout,
-		loadUserCredentials: loadUserCredentials,
+		configure, validate, login, signup, logout, loadUserCredentials,
 		getUserId: () => authUserId,
 		getToken: () => authToken,
 		isAuthenticated: () => isAuthenticated,

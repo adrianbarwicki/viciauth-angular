@@ -27,16 +27,16 @@ You can configure the following properties:
 
 ### API
 
-#### login(email, password)
-#### signup(email, password, params)
-#### validate(email, password)
+#### login(postData)
+#### signup(postData)
+#### validate(postData)
 #### getUserId()
 #### getToken()
 #### isAuthenticated()
 
 ### Authors
 Adrian Barwicki
-viciqloud.com
+viciqloud.com[http://viciqloud.com]
 
 ### Licence
 MIT
