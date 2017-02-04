@@ -1,8 +1,6 @@
 "use strict";
 
-angular.module("viciauth", []).run(function () {
-	console.info("[ViciAuth] Launching Auth Module..");
-}).value("API_URL", "https://api.studentask.de").value("API", {
+angular.module("viciauth", []).value("API", {
 	API_URL: "https://api.studentask.de",
 	LOGIN: "/login",
 	SIGNUP: "/signup",
@@ -23,40 +21,35 @@ angular.module("viciauth", []).run(function () {
 	var authToken = void 0;
 	var authUserId = void 0;
 
-	function configure(configKey, configValue) {
-		API[configKey] = configValue;
-	}
+	var configure = function configure(configKey, configValue) {
+		return API[configKey] = configValue;
+	};
 
-	function useCredentials(token, userId) {
-		console.info("[ViciAuth] Using User Credentials..");
-
+	var useCredentials = function useCredentials(token, userId) {
 		_isAuthenticated = true;
 		authToken = token;
 		authUserId = userId;
 
 		$http.defaults.headers.common['X-Auth-Token'] = token;
-	}
+	};
 
-	function loadUserCredentials() {
-		console.info("[ViciAuth] Loading User Credentials..");
+	var storeUserCredentials = function storeUserCredentials(token, userId) {
+		$window.localStorage.setItem(LOCAL_USER_ID_KEY, userId);
+		$window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
 
+		useCredentials(token, userId);
+	};
+
+	var loadUserCredentials = function loadUserCredentials() {
 		var token = $window.localStorage.getItem(LOCAL_TOKEN_KEY);
 		var userId = $window.localStorage.getItem(LOCAL_USER_ID_KEY);
 
 		if (token) {
 			useCredentials(token, userId);
 		}
-	}
+	};
 
-	function storeUserCredentials(token, userId) {
-		$window.localStorage.setItem(LOCAL_USER_ID_KEY, userId);
-		$window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-
-		useCredentials(token, userId);
-	}
-
-	function destroyUserCredentials() {
-
+	var destroyUserCredentials = function destroyUserCredentials() {
 		authToken = undefined;
 		authUserId = undefined;
 		_isAuthenticated = false;
@@ -65,61 +58,42 @@ angular.module("viciauth", []).run(function () {
 
 		$window.localStorage.removeItem(LOCAL_TOKEN_KEY);
 		$window.localStorage.removeItem(LOCAL_USER_ID_KEY);
-	}
+	};
 
-	function login(email, password) {
-		return $q(function (resolve, reject) {
-			return $http.post(apiFactory("LOGIN"), {
-				id: email,
-				pw: password
-			}).success(function (data) {
-				storeUserCredentials(data.token, data.userId);
+	var loginSignupFnFactory = function loginSignupFnFactory(loginOrSignup) {
+		return function (postData) {
+			return $q(function (resolve, reject) {
+				return $http.post(apiFactory(loginOrSignup), postData).success(function (data) {
+					storeUserCredentials(data.token, data.userId);
 
-				return resolve(data);
-			}).error(function (data) {
-				return reject(data);
+					return resolve(data);
+				}).error(function (data) {
+					return reject(data);
+				});
 			});
-		});
-	}
+		};
+	};
 
-	function signup(email, password, params) {
-		return $q(function (resolve, reject) {
-			var body = {
-				params: params,
-				password: password,
-				email: email
-			};
+	var login = loginSignupFnFactory('LOGIN');
 
-			$http.post(apiFactory("SIGNUP"), body).success(function (data) {
-				storeUserCredentials(data.token, data.userId);
-				resolve(data);
-			}).error(function (data) {
-				return reject(data);
-			});
-		});
-	}
+	var signup = loginSignupFnFactory('SIGNUP');
 
-	function validate(callback) {
-		$http.post(apiFactory("VALIDATE"), {
+	var validate = function validate(callback) {
+		return $http.post(apiFactory("VALIDATE"), {
 			token: $window.localStorage.getItem(LOCAL_TOKEN_KEY)
 		}).then(function (response) {
 			return callback(response.data);
 		});
-	}
+	};
 
-	function logout() {
-		$http.post(apiFactory("LOGOUT")).then(function (data) {
+	var logout = function logout() {
+		return $http.post(apiFactory("LOGOUT")).then(function (data) {
 			return destroyUserCredentials();
 		});
-	}
+	};
 
 	return {
-		configure: configure,
-		validate: validate,
-		login: login,
-		signup: signup,
-		logout: logout,
-		loadUserCredentials: loadUserCredentials,
+		configure: configure, validate: validate, login: login, signup: signup, logout: logout, loadUserCredentials: loadUserCredentials,
 		getUserId: function getUserId() {
 			return authUserId;
 		},
