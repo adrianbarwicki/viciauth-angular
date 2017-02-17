@@ -94,7 +94,9 @@ angular.module("viciauth", []).value("API", {
 	};
 
 	var me = function me(callback) {
-		return $http.get(apiFactory("ME")).then(callback);
+		return $http.get(apiFactory("ME")).then(function (response) {
+			return callback(response.data);
+		});
 	};
 
 	return {
