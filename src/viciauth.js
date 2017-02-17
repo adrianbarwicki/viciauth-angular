@@ -78,7 +78,7 @@ angular.module("viciauth",[ ])
 
 	const logout = () => $http.post(apiFactory("LOGOUT")).then(data => destroyUserCredentials());
  
-	const me = callback => $http.get(apiFactory("ME")).then(callback);
+	const me = callback => $http.get(apiFactory("ME")).then(response => callback(response.data));
 
 	return {
 		me, configure, validate, login, signup, logout, loadUserCredentials,
