@@ -2,6 +2,7 @@ angular.module("viciauth",[ ])
 
 .value("API", {
 	API_URL: "@@API_URL",
+	ME: "@@API_PATHS.ME",
 	LOGIN: "@@API_PATHS.LOGIN",
 	SIGNUP: "@@API_PATHS.SIGNUP",
 	VALIDATE: "@@API_PATHS.VALIDATE",
@@ -77,8 +78,10 @@ angular.module("viciauth",[ ])
 
 	const logout = () => $http.post(apiFactory("LOGOUT")).then(data => destroyUserCredentials());
  
+	const me = callback => $http.get(apiFactory("ME")).then(callback);
+
 	return {
-		configure, validate, login, signup, logout, loadUserCredentials,
+		me, configure, validate, login, signup, logout, loadUserCredentials,
 		getUserId: () => authUserId,
 		getToken: () => authToken,
 		isAuthenticated: () => isAuthenticated,

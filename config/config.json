@@ -1,5 +1,6 @@
 {
     "API_URL": "https://api.studentask.de",
+    "API_PATHS.ME": "/me",
     "API_PATHS.LOGIN": "/login",
     "API_PATHS.SIGNUP": "/signup",
     "API_PATHS.VALIDATE": "/validate",

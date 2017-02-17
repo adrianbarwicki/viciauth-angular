@@ -2,6 +2,7 @@
 
 angular.module("viciauth", []).value("API", {
 	API_URL: "https://api.studentask.de",
+	ME: "/me",
 	LOGIN: "/login",
 	SIGNUP: "/signup",
 	VALIDATE: "/validate",
@@ -92,8 +93,12 @@ angular.module("viciauth", []).value("API", {
 		});
 	};
 
+	var me = function me(callback) {
+		return $http.get(apiFactory("ME")).then(callback);
+	};
+
 	return {
-		configure: configure, validate: validate, login: login, signup: signup, logout: logout, loadUserCredentials: loadUserCredentials,
+		me: me, configure: configure, validate: validate, login: login, signup: signup, logout: logout, loadUserCredentials: loadUserCredentials,
 		getUserId: function getUserId() {
 			return authUserId;
 		},
