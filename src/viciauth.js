@@ -82,7 +82,7 @@ angular.module("viciauth",[ ])
 		.then(response => callback(response.data), response => errFn(response));
 
 	return {
-		me, configure, validate, login, signup, logout, loadUserCredentials,
+		me, configure, validate, login, signup, logout, loadUserCredentials, destroyUserCredentials,
 		getUserId: () => authUserId,
 		getToken: () => authToken,
 		isAuthenticated: () => isAuthenticated,

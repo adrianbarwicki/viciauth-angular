@@ -102,7 +102,7 @@ angular.module("viciauth", []).value("API", {
 	};
 
 	return {
-		me: me, configure: configure, validate: validate, login: login, signup: signup, logout: logout, loadUserCredentials: loadUserCredentials,
+		me: me, configure: configure, validate: validate, login: login, signup: signup, logout: logout, loadUserCredentials: loadUserCredentials, destroyUserCredentials: destroyUserCredentials,
 		getUserId: function getUserId() {
 			return authUserId;
 		},
